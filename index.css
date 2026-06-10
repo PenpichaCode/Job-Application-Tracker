@@ -2,6 +2,52 @@ html {
     font-size: 21px !important;
 }
 
+:root {
+    /* Classic Duckie theme */
+    --duck-50: #FFFDF0;
+    --duck-100: #FFFCA8;
+    --duck-200: #FFF954;
+    --duck-500: #FFE612;
+    --duck-600: #E6CD00;
+    --duck-700: #B39F00;
+}
+
+.theme-mint {
+    --duck-50: #ECFDF5;
+    --duck-100: #A7F3D0;
+    --duck-200: #6EE7B7;
+    --duck-500: #34D399;
+    --duck-600: #059669;
+    --duck-700: #047857;
+}
+
+.theme-ocean {
+    --duck-50: #F0F9FF;
+    --duck-100: #BAE6FD;
+    --duck-200: #7DD3FC;
+    --duck-500: #38BDF8;
+    --duck-600: #0284C7;
+    --duck-700: #0369A1;
+}
+
+.theme-rose {
+    --duck-50: #FFF1F2;
+    --duck-100: #FECDD3;
+    --duck-200: #FDA4AF;
+    --duck-500: #FB7185;
+    --duck-600: #E11D48;
+    --duck-700: #BE123C;
+}
+
+.theme-sunset {
+    --duck-50: #FFF7ED;
+    --duck-100: #FFEDD5;
+    --duck-200: #FDBA74;
+    --duck-500: #FB923C;
+    --duck-600: #EA580C;
+    --duck-700: #C2410C;
+}
+
 /* Professional modern scrollbar in brand yellow */
 ::-webkit-scrollbar {
     width: 8px;
@@ -11,18 +57,18 @@ html {
     background: #F8F9FA;
 }
 ::-webkit-scrollbar-thumb {
-    background: #FFE612;
+    background: var(--duck-500);
     border-radius: 20px;
     border: 2px solid #F8F9FA;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #E6CD00;
+    background: var(--duck-600);
 }
 
 /* Kanban column drag-over highlight */
 .kanban-col.drag-over {
     background-color: rgba(255, 230, 18, 0.05) !important;
-    border: 2.5px dashed #FFE612 !important;
+    border: 2.5px dashed var(--duck-500) !important;
     border-radius: 28px;
 }
 

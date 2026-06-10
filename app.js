@@ -1111,6 +1111,14 @@ let currentSearchQuery = "";
 window.onload = function() {
     lucide.createIcons();
     
+    // Check premium status
+    isPremium = localStorage.getItem('is_premium_user_v1') === 'true';
+    updatePremiumUI();
+    
+    // Load app theme
+    const savedTheme = localStorage.getItem('app_theme_v1') || 'classic';
+    changeAppTheme(savedTheme);
+    
     const hasSeeded = localStorage.getItem('has_seeded_demo_db_v1');
     if (!hasSeeded) {
         applications = [...initialThaiDatabase];
@@ -1639,6 +1647,14 @@ function handleFormSubmit(event) {
     event.preventDefault();
     
     const id = document.getElementById('job-id').value;
+    
+    // Check free tier limit (maximum 5 entries)
+    if (!id && applications.length >= 5 && !isPremium) {
+        closeJobModal();
+        openUpgradeModal();
+        return;
+    }
+    
     const company = document.getElementById('job-company').value.trim();
     const role = document.getElementById('job-role').value.trim();
     const status = document.getElementById('job-status').value;
@@ -1806,4 +1822,105 @@ function renderCharts() {
             cutout: '74%'
         }
     });
+}
+
+// --- Premium Monetization Features (Version 2) ---
+let isPremium = false;
+const VALID_LICENSE_KEYS = ['AMRUBYAM', 'DUCKIE', 'RUBYBEDEV', 'PERUBYE', 'RUBY_BI'];
+
+function openUpgradeModal() {
+    const modal = document.getElementById('upgrade-modal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeUpgradeModal() {
+    const modal = document.getElementById('upgrade-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function updatePremiumUI() {
+    const lockOverlays = document.querySelectorAll('#dashboard-lock-overlay');
+    const lockIndicators = document.querySelectorAll('.lock-indicator');
+    
+    if (isPremium) {
+        lockOverlays.forEach(el => el.classList.add('hidden'));
+        lockIndicators.forEach(el => el.classList.add('hidden'));
+    } else {
+        lockIndicators.forEach(el => el.classList.remove('hidden'));
+        // If they are on the dashboard, show the lock overlay
+        const lockOverlay = document.getElementById('dashboard-lock-overlay');
+        const dashboardTab = document.getElementById('tab-dashboard');
+        if (lockOverlay && dashboardTab && !dashboardTab.classList.contains('hidden')) {
+            lockOverlay.classList.remove('hidden');
+        }
+    }
+}
+
+function activateLicense(key) {
+    const formattedKey = key.trim().toUpperCase();
+    if (VALID_LICENSE_KEYS.includes(formattedKey)) {
+        isPremium = true;
+        localStorage.setItem('is_premium_user_v1', 'true');
+        updatePremiumUI();
+        closeUpgradeModal();
+        showToast("Premium Activated", "Thank you for unlocking Ruby's Premium Workspace! 🎉", "success");
+        return true;
+    }
+    showToast("Invalid Key", "Please check your code or scan the QR code to purchase.", "error");
+    return false;
+}
+
+function activateLicenseFromModal() {
+    const input = document.getElementById('upgrade-license-key');
+    if (input) {
+        const key = input.value;
+        if (activateLicense(key)) {
+            input.value = '';
+        }
+    }
+}
+
+function activateLicenseFromDashboard() {
+    const input = document.getElementById('dashboard-license-key');
+    if (input) {
+        const key = input.value;
+        if (activateLicense(key)) {
+            input.value = '';
+        }
+    }
+}
+
+function handleExportClick() {
+    if (!isPremium) {
+        openUpgradeModal();
+    } else {
+        exportData();
+    }
+}
+
+function handleImportLabelClick(event) {
+    if (!isPremium) {
+        event.preventDefault(); // Block opening the file selector
+        openUpgradeModal();
+    }
+}
+
+function handleThemeClick(themeId) {
+    if (!isPremium) {
+        openUpgradeModal();
+    } else {
+        changeAppTheme(themeId);
+        localStorage.setItem('app_theme_v1', themeId);
+        showToast("Theme Updated", `Switched color theme to ${themeId}.`, "success");
+    }
+}
+
+function changeAppTheme(themeId) {
+    // Reset body theme class
+    const baseClass = "font-sans h-full flex flex-col md:flex-row overflow-hidden bg-[#F8F9FA] text-slate-800";
+    if (themeId === 'classic') {
+        document.body.className = baseClass;
+    } else {
+        document.body.className = `${baseClass} theme-${themeId}`;
+    }
 }

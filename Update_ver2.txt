@@ -1,0 +1,45 @@
+🗺️ Premium Monetization Feature Blueprint
+🟨 Phase 1: 
+1. Limits & Boundaries (Lock Conditions)
+Free Tier: Record job applications to the board or table for free, up to 5 entries (Max 5 Rows)
+
+Premium Tier: Unlock unlimited entries, enable Analytics Hub statistics page, and enable Export/Import JSON button for data backup. Chang theme color (you create theme color about 5 theme)
+
+Price Point: 299 THB (One-time purchase / Lifetime)
+
+🟨 Phase 2: Premium Access Issue (When attempting to add the 6th element)
+When the user enters the 6th element's information and clicks the "Commit Application" button, the system will not allow saving.
+
+The screen will immediately display a Custom Upgrade Modal (a minimalist white and yellow floating pop-up window) blocking the screen, along with a message indicating the premium access fee and a add line for payment of 299 THB.
+
+🟥 Phase 3: Permanent Feature Locking After Switching Tabs
+If a user closes the Add Task window and then attempts to access the Analytics Hub tab or clicks the Export/Import button, the system will lock that page with a blurred overlay and display a field for entering a password to unlock it (License Key Input).
+
+💎 Upgraded Pop-up Screen Design (Premium Modal Design)
+When the user meets the lock conditions, the pop-up will display the following professional, clean, and minimalist English message:
+
+Heading: Upgrade to Ruby's Premium
+
+Subheading: You have reached the free tier limit of 5 applications. Unlock the full potential of your career tracker.
+
+Value Proposition Points (Benefits when paying 299 THB):
+
+Unlimited job application tracking rows
+
+Full access to interactive Analytics Hub & trend line graphs
+
+Secure workspace data backups (Export/Import JSON)
+
+One-time payment, lifetime access. 100% Privacy.
+
+Payment Section: Displays a QR code, a field for entering the License Key, and a "Activate Premium Workspace" button.
+
+🟥 Phase 4; create License Key about 5 License Key to  Unlock
+License Key 1: AMRUBYAM
+License Key 2: DUCKIE
+License Key 3: RUBYBEDEV
+License Key 4: PERUBYE
+License Key 5: RUBY_BI
+
+
+

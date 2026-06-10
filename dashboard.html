@@ -23,12 +23,12 @@
                     },
                     colors: {
                         duck: {
-                            50: '#FFFDF0',
-                            100: '#FFFCA8',
-                            200: '#FFF954',
-                            500: '#FFE612',
-                            600: '#E6CD00',
-                            700: '#B39F00'
+                            50: 'var(--duck-50)',
+                            100: 'var(--duck-100)',
+                            200: 'var(--duck-200)',
+                            500: 'var(--duck-500)',
+                            600: 'var(--duck-600)',
+                            700: 'var(--duck-700)'
                         }
                     }
                 }
@@ -76,15 +76,25 @@
                     <span>All Applications</span>
                 </div>
             </button>
+            <span class="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mt-6 mb-2">App Theme</span>
+            <div class="flex items-center space-x-2.5 px-3 py-1.5 bg-slate-50 rounded-2xl border border-slate-100/70">
+                <button onclick="handleThemeClick('classic')" class="w-6 h-6 rounded-full bg-[#FFE612] border-2 border-white shadow-sm ring-1 ring-slate-200 focus:outline-none transition-all active:scale-95" title="Classic Yellow"></button>
+                <button onclick="handleThemeClick('mint')" class="w-6 h-6 rounded-full bg-[#34D399] border-2 border-white shadow-sm ring-1 ring-slate-200 focus:outline-none transition-all active:scale-95" title="Mint Green"></button>
+                <button onclick="handleThemeClick('ocean')" class="w-6 h-6 rounded-full bg-[#38BDF8] border-2 border-white shadow-sm ring-1 ring-slate-200 focus:outline-none transition-all active:scale-95" title="Ocean Blue"></button>
+                <button onclick="handleThemeClick('rose')" class="w-6 h-6 rounded-full bg-[#FB7185] border-2 border-white shadow-sm ring-1 ring-slate-200 focus:outline-none transition-all active:scale-95" title="Rose Velvet"></button>
+                <button onclick="handleThemeClick('sunset')" class="w-6 h-6 rounded-full bg-[#FB923C] border-2 border-white shadow-sm ring-1 ring-slate-200 focus:outline-none transition-all active:scale-95" title="Sunset Orange"></button>
+            </div>
             
             <span class="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mt-6 mb-2">Data Registry</span>
-            <button onclick="exportData()" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">
+            <button onclick="handleExportClick()" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">
                 <i data-lucide="download" class="w-4 h-4"></i>
                 <span>Export JSON Backup</span>
+                <i data-lucide="lock" class="w-3.5 h-3.5 ml-auto text-slate-400 lock-indicator"></i>
             </button>
-            <label class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all cursor-pointer">
+            <label onclick="handleImportLabelClick(event)" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all cursor-pointer">
                 <i data-lucide="upload" class="w-4 h-4"></i>
                 <span>Import JSON Backup</span>
+                <i data-lucide="lock" class="w-3.5 h-3.5 ml-auto text-slate-400 lock-indicator"></i>
                 <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
             </label>
 
@@ -159,7 +169,22 @@
         <div class="p-6 flex-1 max-w-7xl w-full mx-auto space-y-6">
             
             <!-- Dashboard Tab -->
-            <section id="tab-dashboard" class="space-y-6">
+            <section id="tab-dashboard" class="relative space-y-6">
+                <!-- Premium Lock Overlay for Dashboard -->
+                <div id="dashboard-lock-overlay" class="hidden absolute inset-0 z-30 bg-slate-900/5 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center p-6 text-center space-y-4">
+                    <div class="p-6 bg-white border border-slate-200 shadow-2xl rounded-3xl max-w-sm space-y-4 flex flex-col items-center">
+                        <div class="p-3 bg-duck-500/15 rounded-full text-duck-600">
+                            <i data-lucide="lock" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-extrabold text-slate-800 text-base">Analytics Hub Locked</h3>
+                        <p class="text-xs font-bold text-slate-500">Upgrade to Premium to view detailed charts, metrics, and trends for your job search.</p>
+                        <div class="w-full space-y-2 pt-2">
+                            <input type="text" id="dashboard-license-key" placeholder="Enter License Key" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 text-center font-bold focus:ring-1 focus:ring-duck-500 focus:outline-none">
+                            <button onclick="activateLicenseFromDashboard()" class="w-full px-5 py-2.5 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">Activate Premium</button>
+                        </div>
+                        <button onclick="openUpgradeModal()" class="text-xs font-bold text-duck-600 hover:text-duck-700 underline">Don't have a key? Buy Premium</button>
+                    </div>
+                </div>
                 
                 <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
                     <div class="bg-white border border-slate-200/60 p-5 rounded-3xl relative overflow-hidden group hover:scale-105 transition-all duck-shadow">
@@ -549,6 +574,65 @@
                 <button onclick="closeWelcomeModal()" class="w-full px-5 py-3 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">
                     Let's Go!
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade Modal (Premium Lock) -->
+    <div id="upgrade-modal" class="hidden fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl p-6 space-y-4 relative">
+            <button onclick="closeUpgradeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="flex flex-col items-center space-y-2 text-center">
+                <div class="p-3 bg-duck-500/15 rounded-full text-duck-600">
+                    <i data-lucide="crown" class="w-8 h-8"></i>
+                </div>
+                <h3 class="font-extrabold text-slate-800 text-lg">Upgrade to Ruby's Premium</h3>
+                <p class="text-xs font-bold text-slate-500 px-4">
+                    You have reached the free tier limit of 5 applications. Unlock the full potential of your career tracker.
+                </p>
+            </div>
+
+            <!-- Value Props -->
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-2.5 text-xs font-bold text-slate-700">
+                <div class="flex items-center space-x-2.5">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
+                    <span>Unlimited job application tracking rows</span>
+                </div>
+                <div class="flex items-center space-x-2.5">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
+                    <span>Full access to interactive Analytics Hub & trend line graphs</span>
+                </div>
+                <div class="flex items-center space-x-2.5">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
+                    <span>Secure workspace data backups (Export/Import JSON)</span>
+                </div>
+                <div class="flex items-center space-x-2.5">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
+                    <span>One-time payment, lifetime access. 100% Privacy.</span>
+                </div>
+            </div>
+
+            <!-- Payment & QR Code -->
+            <div class="border-t border-slate-100 pt-4 flex flex-col items-center space-y-4">
+                <div class="flex flex-col items-center text-center space-y-1">
+                    <span class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Scan to Pay (299 THB)</span>
+                    <!-- Beautiful CSS QR code container -->
+                    <div class="mt-2 p-2 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                        <img src="https://rubyduckie.com/wp-content/uploads/2026/03/image-12.png?allow_lossy=1" alt="PromptPay QR Code – 299 THB" class="w-36 h-36 object-contain rounded-xl" />
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-bold mt-1">PromptPay / Bank Transfer Supported</span>
+                </div>
+
+                <!-- Activation Form -->
+                <div class="w-full space-y-2">
+                    <input type="text" id="upgrade-license-key" placeholder="Enter License Key (e.g. DUCKIE)" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 text-center font-extrabold uppercase placeholder-slate-400 focus:ring-1 focus:ring-duck-500 focus:outline-none">
+                    <button onclick="activateLicenseFromModal()" class="w-full px-5 py-3 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">
+                        Activate Premium Workspace
+                    </button>
+                </div>
             </div>
         </div>
     </div>
