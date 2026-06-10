@@ -212,11 +212,20 @@ body {
 }
 
 .hero__title {
+  font-family: 'Cooper Black', 'Fraunces', serif;
   font-size: clamp(38px, 6vw, 64px);
-  font-weight: 700;
+  font-weight: 900;
   line-height: 1.15;
   letter-spacing: -0.5px;
   color: var(--text);
+}
+
+.hero__title .accent {
+  font-family: 'Vintage Script', 'Grand Hotel', 'Satisfy', cursive;
+  font-weight: normal;
+  text-transform: none;
+  font-size: 1.15em;
+  display: inline-block;
 }
 
 .hero__sub {
