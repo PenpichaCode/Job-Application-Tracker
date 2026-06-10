@@ -1531,6 +1531,7 @@ function shiftStage(id, offset) {
 function applyTableFilters() {
     const statusFilter = document.getElementById('filter-status').value;
     const locationTypeFilter = document.getElementById('filter-location-type').value;
+    const employeeTypeFilter = document.getElementById('filter-employee-type') ? document.getElementById('filter-employee-type').value : 'all';
     const cityFilter = document.getElementById('filter-city').value;
     const tableBody = document.getElementById('complete-jobs-table-body');
     
@@ -1538,6 +1539,7 @@ function applyTableFilters() {
 
     if (statusFilter !== 'all') filtered = filtered.filter(a => a.status === statusFilter);
     if (locationTypeFilter !== 'all') filtered = filtered.filter(a => a.locationType === locationTypeFilter);
+    if (employeeTypeFilter !== 'all') filtered = filtered.filter(a => a.employeeType === employeeTypeFilter);
     if (cityFilter !== 'all') filtered = filtered.filter(a => a.city === cityFilter);
 
     document.getElementById('table-results-count').textContent = `Found ${filtered.length} applications`;
@@ -1563,25 +1565,24 @@ function applyTableFilters() {
         const displayDate = job.date ? job.date : '—';
 
         return `
-            <tr class="hover:bg-slate-50/50 transition-all text-xs font-bold text-slate-600">
-                <td class="p-4">
-                    <div class="font-bold text-slate-800">${job.company}</div>
-                    <div class="text-[10px] text-slate-500 mt-1">${job.role}</div>
+            <tr class="hover:bg-slate-50/50 transition-all text-xs text-slate-600">
+                <td class="px-4 py-3">
+                    <div class="font-bold text-slate-800 text-xs">${job.company}</div>
+                    <div class="text-[11px] text-slate-500 mt-0.5 font-semibold">${job.role}</div>
                 </td>
-                <td class="p-4 text-slate-400 font-medium">${displayDate}</td>
-                <td class="p-4 font-semibold text-slate-700">${job.city}</td>
-                <td class="p-4">
-                    <span class="px-2.5 py-1 bg-[#F8F9FA] border border-slate-200 text-[10px] font-bold text-slate-500">
-                        ${job.locationType}
-                    </span>
+                <td class="px-4 py-3 text-[11px] text-slate-400 font-semibold">${displayDate}</td>
+                <td class="px-4 py-3 text-[11px] font-semibold text-slate-700">${job.city || '—'}</td>
+                <td class="px-4 py-3">
+                    <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 text-[10px] font-bold text-blue-600 rounded-xl">${job.locationType || '—'}</span>
                 </td>
-                <td class="p-4 text-right font-bold text-slate-800">฿${Number(job.salary).toLocaleString()}</td>
-                <td class="p-4 text-center">
-                    <span class="inline-block text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full ${badgeClass}">
-                        ${job.status}
-                    </span>
+                <td class="px-4 py-3">
+                    <span class="px-2.5 py-1 bg-purple-50 border border-purple-100 text-[10px] font-bold text-purple-600 rounded-xl">${job.employeeType || '—'}</span>
                 </td>
-                <td class="p-4 text-right">
+                <td class="px-4 py-3 text-right text-[11px] font-bold text-slate-800">฿${Number(job.salary).toLocaleString()}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="inline-block text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full ${badgeClass}">${job.status}</span>
+                </td>
+                <td class="px-4 py-3 text-right">
                     <div class="flex items-center justify-end space-x-1">
                         <button onclick="openEditJobModal('${job.id}')" class="p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-800 rounded-xl transition-colors" title="Edit">
                             <i data-lucide="edit" class="w-3.5 h-3.5"></i>
@@ -1627,6 +1628,11 @@ function openEditJobModal(id) {
     document.getElementById('job-notes').value = job.notes || '';
     document.getElementById('job-date').value = job.date || new Date().toISOString().split('T')[0];
 
+    // Restore pill buttons
+    restorePill('work-type-group', 'job-location-type', job.locationType || 'Full-time');
+    restorePill('emp-type-group', 'job-employee-type', job.employeeType || 'Permanent');
+    document.getElementById('job-employee-type').value = job.employeeType || 'Permanent';
+
     document.getElementById('modal-title').textContent = "Edit Application";
     document.getElementById('modal-icon-container').innerHTML = '<i data-lucide="edit-3" class="w-4 h-4"></i>';
 
@@ -1660,6 +1666,7 @@ function handleFormSubmit(event) {
     const status = document.getElementById('job-status').value;
     const city = document.getElementById('job-city').value;
     const locationType = document.getElementById('job-location-type').value;
+    const employeeType = document.getElementById('job-employee-type').value;
     const salary = Number(document.getElementById('job-salary').value);
     const notes = document.getElementById('job-notes').value.trim();
     const date = document.getElementById('job-date').value;
@@ -1667,12 +1674,12 @@ function handleFormSubmit(event) {
     if (id) {
         const index = applications.findIndex(a => a.id === id);
         if (index > -1) {
-            applications[index] = { id, company, role, status, city, locationType, salary, notes, date };
+            applications[index] = { id, company, role, status, city, locationType, employeeType, salary, notes, date };
             showToast("Saved Successfully", `Updated application for ${company}.`, "success");
         }
     } else {
         const newId = 'job_' + Date.now();
-        applications.unshift({ id: newId, company, role, status, city, locationType, salary, notes, date });
+        applications.unshift({ id: newId, company, role, status, city, locationType, employeeType, salary, notes, date });
         showToast("Saved Successfully", `Added application for ${company}.`, "success");
     }
 
@@ -1827,6 +1834,21 @@ function renderCharts() {
 // --- Premium Monetization Features (Version 2) ---
 let isPremium = false;
 const VALID_LICENSE_KEYS = ['AMRUBYAM', 'DUCKIE', 'RUBYBEDEV', 'PERUBYE', 'RUBY_BI'];
+
+// Pill button selector helper
+function selectPill(groupId, hiddenInputId, value, clickedBtn) {
+    document.querySelectorAll(`#${groupId} .pill-btn`).forEach(btn => btn.classList.remove('active-pill'));
+    clickedBtn.classList.add('active-pill');
+    document.getElementById(hiddenInputId).value = value;
+}
+
+function restorePill(groupId, hiddenInputId, value) {
+    document.getElementById(hiddenInputId).value = value;
+    document.querySelectorAll(`#${groupId} .pill-btn`).forEach(btn => {
+        btn.classList.remove('active-pill');
+        if (btn.textContent.trim().includes(value)) btn.classList.add('active-pill');
+    });
+}
 
 function openUpgradeModal() {
     const modal = document.getElementById('upgrade-modal');

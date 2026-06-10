@@ -2,6 +2,27 @@ html {
     font-size: 21px !important;
 }
 
+/* Pill selector buttons in Add/Edit modal */
+.pill-btn {
+    background: #F8F9FA;
+    border-color: #E2E8F0;
+    color: #64748B;
+    cursor: pointer;
+}
+.pill-btn:hover {
+    background: var(--duck-50);
+    border-color: var(--duck-500);
+    color: #0f172a;
+    transform: scale(1.03);
+}
+.pill-btn.active-pill {
+    background: var(--duck-500);
+    border-color: var(--duck-600);
+    color: #0f172a;
+    box-shadow: 0 4px 12px -2px rgba(255,230,18,0.35);
+}
+
+
 :root {
     /* Classic Duckie theme */
     --duck-50: #FFFDF0;
