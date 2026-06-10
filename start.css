@@ -220,13 +220,6 @@ body {
   color: var(--text);
 }
 
-.hero__title .accent {
-  font-family: 'Luckiest Guy', cursive;
-  font-weight: normal;
-  text-transform: none;
-  font-size: 1.1em;
-  display: inline-block;
-}
 
 .hero__sub {
   font-size: 20px;
