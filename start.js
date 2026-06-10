@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Buttons that should navigate to the main dashboard (index.html)
+  // Buttons that should navigate to the main dashboard (dashboard.html)
   const goToDashboard = (id) => {
     const el = document.getElementById(id);
     if (el) {
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fade‑out transition for a nicer UX
         document.body.classList.add('opacity-0', 'transition-opacity', 'duration-300');
         setTimeout(() => {
-          window.location.href = 'index.html';
+          window.location.href = 'dashboard.html';
         }, 300);
       });
     }
