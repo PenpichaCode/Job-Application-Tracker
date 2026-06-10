@@ -626,9 +626,20 @@
                     <span class="text-[10px] text-slate-400 font-bold mt-1">PromptPay / Bank Transfer Supported</span>
                 </div>
 
+                <!-- Pay Slip Step -->
+                <div class="w-full bg-amber-50 border border-amber-200/60 rounded-2xl p-3.5 flex items-start space-x-2.5">
+                    <span class="text-amber-500 text-base mt-0.5 flex-shrink-0">📨</span>
+                    <div class="text-[11px] text-amber-800 font-semibold leading-relaxed">
+                        After payment, please send your <strong>pay slip</strong> to Ruby via the contact link below to receive your License Key.
+                        <a href="https://rubyduckie.com/get-in-touch-%E2%98%95-get-in-touch-%E2%98%95get-in-touch-%E2%98%95/" target="_blank" class="block mt-1.5 text-center font-extrabold text-amber-700 hover:text-amber-900 underline underline-offset-2 transition-colors">
+                            ☕ Send Pay Slip to Ruby →
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Activation Form -->
                 <div class="w-full space-y-2">
-                    <input type="text" id="upgrade-license-key" placeholder="Enter License Key (e.g. DUCKIE)" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 text-center font-extrabold uppercase placeholder-slate-400 focus:ring-1 focus:ring-duck-500 focus:outline-none">
+                    <input type="text" id="upgrade-license-key" placeholder="Enter your License Key here" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 text-center font-extrabold uppercase placeholder-slate-400 focus:ring-1 focus:ring-duck-500 focus:outline-none">
                     <button onclick="activateLicenseFromModal()" class="w-full px-5 py-3 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">
                         Activate Premium Workspace
                     </button>
