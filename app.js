@@ -1111,13 +1111,13 @@ let currentSearchQuery = "";
 window.onload = function() {
     lucide.createIcons();
     
-    const hasSeeded = localStorage.getItem('has_seeded_initial_db');
+    const hasSeeded = localStorage.getItem('has_seeded_demo_db_v1');
     if (!hasSeeded) {
         applications = [...initialThaiDatabase];
         saveToLocalStorage();
-        localStorage.setItem('has_seeded_initial_db', 'true');
+        localStorage.setItem('has_seeded_demo_db_v1', 'true');
     } else {
-        const stored = localStorage.getItem('thai_careers_db');
+        const stored = localStorage.getItem('careers_tracker_db_v1');
         if (stored) {
             try {
                 applications = JSON.parse(stored);
@@ -1129,7 +1129,7 @@ window.onload = function() {
         }
     }
     
-    const hasWelcomed = localStorage.getItem('has_welcomed_user');
+    const hasWelcomed = localStorage.getItem('has_welcomed_user_v1');
     if (!hasWelcomed) {
         const welcomeModal = document.getElementById('welcome-modal');
         if (welcomeModal) {
@@ -1145,7 +1145,7 @@ window.onload = function() {
 };
 
 function saveToLocalStorage() {
-    localStorage.setItem('thai_careers_db', JSON.stringify(applications));
+    localStorage.setItem('careers_tracker_db_v1', JSON.stringify(applications));
 }
 
 function getFilteredApplications() {
@@ -1181,14 +1181,14 @@ function closeWelcomeModal() {
     if (welcomeModal) {
         welcomeModal.classList.add('hidden');
     }
-    localStorage.setItem('has_welcomed_user', 'true');
+    localStorage.setItem('has_welcomed_user_v1', 'true');
 }
 
 function triggerResetWorkspace() {
     showCustomConfirm("Are you sure you want to reset the workspace to empty? This will delete all tracked applications.", function() {
         applications = [];
-        localStorage.setItem('thai_careers_db', JSON.stringify([]));
-        localStorage.setItem('has_seeded_initial_db', 'true');
+        localStorage.setItem('careers_tracker_db_v1', JSON.stringify([]));
+        localStorage.setItem('has_seeded_demo_db_v1', 'true');
         renderAllViews();
         showToast("Workspace Reset", "All application data has been cleared.", "info");
     });
