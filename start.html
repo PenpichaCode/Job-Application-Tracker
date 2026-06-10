@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RubyDuckie | Job Application Tracker</title>
+  <meta name="description" content="Track, manage, and land your dream jobs with a beautiful, offline-first dashboard." />
+  <link rel="stylesheet" href="start.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="#" class="nav__logo">
+        <img src="assets/images/start-page.png" alt="RubyDuckie Logo" class="nav__logo-img" />
+        Ruby<span class="accent">Duckie</span>
+      </a>
+      <nav class="nav__links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="https://rubyduckie.com/get-in-touch-%E2%98%95-get-in-touch-%E2%98%95get-in-touch-%E2%98%95/" target="_blank">Contact</a>
+        <a href="#" class="btn btn--primary" id="btn-start">Get started</a>
+      </nav>
+      <button class="nav__hamburger" id="hamburger" aria-label="Open menu">
+        <i class="ti ti-menu-2"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero__inner">
+        <span class="badge">
+          <i class="ti ti-shield-lock"></i>
+          100% offline &middot; zero servers
+        </span>
+        <h1 class="hero__title">
+          Track every application.<br />
+          Land your <span class="accent">dream job.</span>
+        </h1>
+        <p class="hero__sub">
+          A private, offline-first dashboard for your job search. Organize roles,
+          track stages, and stay in control — no accounts, no cloud.
+        </p>
+        <div class="hero__cta">
+          <a href="#" class="btn btn--primary btn--lg" id="btn-hero">
+            <i class="ti ti-player-play"></i> Start locally
+          </a>
+          <a href="#features" class="btn btn--ghost btn--lg">
+            <i class="ti ti-chevron-down"></i> See features
+          </a>
+        </div>
+        <div class="hero__pills">
+          <span class="pill"><i class="ti ti-database"></i> Your browser, your data</span>
+          <span class="pill"><i class="ti ti-file-export"></i> JSON backup in one click</span>
+          <span class="pill"><i class="ti ti-brand-chrome"></i> Works offline</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- KANBAN PREVIEW -->
+    <section class="preview">
+      <div class="container">
+        <div class="kanban-window">
+          <div class="kanban-window__bar">
+            <span class="dot dot--red"></span>
+            <span class="dot dot--yellow"></span>
+            <span class="dot dot--gray"></span>
+          </div>
+          <div class="kanban-board">
+            <div class="kanban-col">
+              <div class="kanban-col__title">Applied</div>
+              <div class="kanban-card kanban-card--crimson">
+                <div class="kanban-card__company">Stripe</div>
+                <div class="kanban-card__role">Senior Engineer</div>
+              </div>
+              <div class="kanban-card kanban-card--yellow">
+                <div class="kanban-card__company">Vercel</div>
+                <div class="kanban-card__role">Frontend Dev</div>
+              </div>
+            </div>
+            <div class="kanban-col">
+              <div class="kanban-col__title">Screening</div>
+              <div class="kanban-card kanban-card--coral">
+                <div class="kanban-card__company">Linear</div>
+                <div class="kanban-card__role">Full-stack</div>
+              </div>
+            </div>
+            <div class="kanban-col">
+              <div class="kanban-col__title">Interview</div>
+              <div class="kanban-card kanban-card--crimson">
+                <div class="kanban-card__company">Notion</div>
+                <div class="kanban-card__role">Product Eng.</div>
+              </div>
+            </div>
+            <div class="kanban-col">
+              <div class="kanban-col__title">Offer</div>
+              <div class="kanban-card kanban-card--yellow">
+                <div class="kanban-card__company">Figma</div>
+                <div class="kanban-card__role">Staff Eng. 🎉</div>
+              </div>
+            </div>
+          </div>
+          <p class="kanban-window__caption">Kanban board — drag and drop across stages</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Everything you need, nothing you don't</h2>
+          <p>Built for focus. Works in your browser. Runs entirely offline.</p>
+        </div>
+        <div class="features__grid">
+          <div class="feature-card">
+            <div class="feature-card__icon"><i class="ti ti-layout-kanban"></i></div>
+            <h3>Kanban pipeline</h3>
+            <p>Drag applications through custom hiring stages. Visual, fast, satisfying.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-card__icon"><i class="ti ti-shield-check"></i></div>
+            <h3>Offline &amp; private</h3>
+            <p>Everything lives in <code>localStorage</code>. No account. No server.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-card__icon"><i class="ti ti-file-code"></i></div>
+            <h3>JSON backups</h3>
+            <p>Export your full pipeline or restore from a backup in one click.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how" id="how">
+      <div class="container">
+        <div class="section-header">
+          <h2>Up and running in minutes</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step__num">1</div>
+            <div class="step__body">
+              <h3>Click "Get started locally"</h3>
+              <p>No signup, no install. Opens straight in your browser.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step__num">2</div>
+            <div class="step__body">
+              <h3>Add your first application</h3>
+              <p>Log company, role, status, salary, and notes. Drag to update.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step__num">3</div>
+            <div class="step__body">
+              <h3>Export a backup anytime</h3>
+              <p>Download your data as JSON and restore it whenever you need.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner">
+      <div class="container cta-banner__inner">
+        <h2>Ready to take control of your job search?</h2>
+        <p>Free, private, and works entirely in your browser.</p>
+        <a href="#" class="btn btn--yellow btn--lg" id="btn-cta">
+          <i class="ti ti-player-play"></i> Get started locally
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <span>© 2026 Ruby Duckie. All rights reserved.</span>
+      <a href="https://rubyduckie.com/get-in-touch-%E2%98%95-get-in-touch-%E2%98%95get-in-touch-%E2%98%95/" target="_blank">
+        <i class="ti ti-coffee"></i> Contact Ruby
+      </a>
+    </div>
+  </footer>
+
+  <script src="start.js"></script>
+</body>
+</html>

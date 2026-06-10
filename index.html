@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#F8F9FA] text-slate-800">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruby's Duckie Tracker | Careers Board</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Elms Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        duck: {
+                            50: '#FFFDF0',
+                            100: '#FFFCA8',
+                            200: '#FFF954',
+                            500: '#FFE612',
+                            600: '#E6CD00',
+                            700: '#B39F00'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="index.css">
+</head>
+<body class="font-sans h-full flex flex-col md:flex-row overflow-hidden bg-[#F8F9FA] text-slate-800">
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-slate-200/80 flex flex-col flex-shrink-0 z-20">
+        <div class="py-3 px-6 border-b border-slate-200/60 flex flex-col justify-center">
+            <div class="flex items-center justify-between w-full">
+                <div class="flex items-center">
+                    <img src="assets/images/image_f13c58.png" alt="Ruby's Duckie Logo" class="h-28 w-full object-contain object-left -my-4">
+                </div>
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-400 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors">
+                    <i data-lucide="menu" id="menu-icon" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="sidebar-brand w-full text-center text-2xl font-bold text-black mt-2">Job Application Tracker</div>
+        </div>
+
+        <button onclick="triggerResetWorkspace()" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">
+  <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+  <span>Reset to Empty Workspace</span>
+</button>
+<nav id="sidebar-menu" class="hidden md:flex flex-col flex-1 p-4 space-y-1.5 overflow-y-auto">
+            <span class="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Workspace Views</span>
+            <button onclick="switchTab('dashboard')" id="btn-tab-dashboard" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-900 bg-duck-500/15 border border-duck-500/30 shadow-sm">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                <span>Analytics Dashboard</span>
+            </button>
+            <button onclick="switchTab('board')" id="btn-tab-board" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100/60 border border-transparent">
+                <i data-lucide="kanban-square" class="w-4 h-4"></i>
+                <span>Kanban Pipeline</span>
+            </button>
+            <button onclick="switchTab('table')" id="btn-tab-table" class="tab-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100/60 border border-transparent">
+                <div class="flex items-center space-x-3">
+                    <i data-lucide="list-ordered" class="w-4 h-4"></i>
+                    <span>All Applications</span>
+                </div>
+            </button>
+            
+            <span class="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mt-6 mb-2">Data Registry</span>
+            <button onclick="exportData()" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Export JSON Backup</span>
+            </button>
+            <label class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all cursor-pointer">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Import JSON Backup</span>
+                <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+            </label>
+
+            
+
+            <!-- Data Loss Warning Banner -->
+            <div class="p-3.5 bg-amber-50 border border-amber-200/50 rounded-2xl" style="margin-top: auto;">
+                <div class="flex items-start space-x-2.5">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0"></i>
+                    <div class="flex-1">
+                        <p class="text-[10px] font-extrabold text-amber-800 uppercase tracking-wider">Local Storage Notice</p>
+                        <p class="text-[10px] text-amber-700 leading-relaxed font-semibold mt-1">
+                            Your application data is stored locally in this browser. Clearing cache or cookies will wipe all data. We highly recommend exporting a backup JSON file regularly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="p-4 border-t border-slate-200/60 bg-[#F8F9FA] hidden md:block">
+            <div class="flex items-center space-x-3 p-2.5 rounded-2xl bg-white border border-slate-200/50">
+                <div class="relative">
+                    <span class="flex items-center justify-center w-9 h-9 rounded-full bg-slate-900 text-xs font-bold text-white shadow-sm">RD</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-extrabold text-slate-800 truncate">rubysduckie.com</p>
+                    <p class="text-[10px] text-slate-400 truncate font-bold">Happy Hunt</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 flex flex-col h-full overflow-y-auto">
+        <header class="h-16 border-b border-slate-200/60 bg-white/80 flex items-center justify-between px-6 flex-shrink-0 z-10 backdrop-blur-md">
+            <div class="flex items-center space-x-4 flex-1">
+                <div class="relative w-full max-w-md">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </span>
+                    <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl py-2 pl-10 pr-4 text-xs text-slate-600 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-duck-500 focus:border-duck-500" placeholder="Search company, role, or city...">
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3 ml-4">
+                <button onclick="openAddJobModal()" class="flex items-center space-x-2 bg-duck-500 hover:bg-duck-600 hover:scale-105 active:scale-95 text-slate-900 font-extrabold py-2 px-5 rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Add Application</span>
+                </button>
+                <a href="https://rubyduckie.com/get-in-touch-%E2%98%95-get-in-touch-%E2%98%95get-in-touch-%E2%98%95/" target="_blank" class="flex items-center space-x-2 bg-duck-500 hover:bg-duck-600 hover:scale-105 active:scale-95 text-slate-900 font-extrabold py-2 px-5 rounded-2xl text-xs transition-all">Contact Ruby!</a>
+            </div>
+        </header>
+
+        <!-- Toast Container (Fixed nesting bugs) -->
+        <div id="toast-message" class="hidden fixed bottom-6 right-6 z-50 transform translate-y-2 opacity-0 transition-all duration-300">
+            <div class="flex items-center space-x-3 bg-white border border-slate-200 shadow-xl rounded-2xl p-4 min-w-[320px]">
+                <div id="toast-icon-bg" class="p-2 rounded-xl text-white">
+                    <div id="toast-icon-container">
+                        <!-- Icon will be inserted dynamically here -->
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h4 id="toast-title" class="text-xs font-bold text-slate-800">Notification</h4>
+                    <p id="toast-desc" class="text-[11px] text-slate-500 mt-0.5">Action completed.</p>
+                </div>
+                <button onclick="closeToast()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="p-6 flex-1 max-w-7xl w-full mx-auto space-y-6">
+            
+            <!-- Dashboard Tab -->
+            <section id="tab-dashboard" class="space-y-6">
+                
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="bg-white border border-slate-200/60 p-5 rounded-3xl relative overflow-hidden group hover:scale-105 transition-all duck-shadow">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <i data-lucide="box" class="w-16 h-16 text-slate-400"></i>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Total Applications</span>
+                            <span class="p-1.5 bg-slate-50 text-slate-600 rounded-xl"><i data-lucide="check-square" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                        <div class="flex items-baseline space-x-1">
+                            <span id="metric-total" class="text-2xl font-extrabold tracking-tight text-slate-800">-</span>
+                            <span class="text-[10px] font-bold text-slate-400">Applications</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/60 p-5 rounded-3xl relative overflow-hidden group hover:scale-105 transition-all duck-shadow">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <i data-lucide="hourglass" class="w-16 h-16 text-sky-500"></i>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Applied</span>
+                            <span class="p-1.5 bg-sky-50 text-sky-600 rounded-xl"><i data-lucide="send-to-back" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                        <div class="flex items-baseline space-x-1">
+                            <span id="metric-applied" class="text-2xl font-extrabold tracking-tight text-slate-800">-</span>
+                            <span class="text-[10px] font-bold text-slate-400">Companies</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/60 p-5 rounded-3xl relative overflow-hidden group hover:scale-105 transition-all duck-shadow">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <i data-lucide="phone-call" class="w-16 h-16 text-duck-500"></i>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Interviewing</span>
+                            <span class="p-1.5 bg-duck-500/10 text-slate-700 rounded-xl"><i data-lucide="messages-square" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                        <div class="flex items-baseline space-x-1">
+                            <span id="metric-interview" class="text-2xl font-extrabold tracking-tight text-slate-800">-</span>
+                            <span class="text-[10px] font-bold text-slate-400">Interviews</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/60 p-5 rounded-3xl relative overflow-hidden group hover:scale-105 transition-all duck-shadow">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <i data-lucide="sparkles" class="w-16 h-16 text-emerald-500"></i>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Offers Received</span>
+                            <span class="p-1.5 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="party-popper" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                        <div class="flex items-baseline space-x-1">
+                            <span id="metric-offers" class="text-2xl font-extrabold tracking-tight text-slate-800">-</span>
+                            <span class="text-[10px] font-bold text-slate-400">Offers</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/60 p-5 rounded-3xl relative overflow-hidden group hover:scale-105 transition-all duck-shadow">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <i data-lucide="coins" class="w-16 h-16 text-purple-500"></i>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Average Salary</span>
+                            <span class="p-1.5 bg-purple-50 text-purple-600 rounded-xl"><i data-lucide="wallet" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                        <div class="flex items-baseline space-x-1">
+                            <span id="metric-avg-salary" class="text-lg font-extrabold tracking-tight text-slate-800">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white border border-slate-200/60 rounded-3xl p-6 duck-shadow flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800">Application Velocity</h3>
+                                <p class="text-[11px] text-slate-400 font-medium">Overview of your application frequency over time</p>
+                            </div>
+                            <span class="text-[9px] font-extrabold tracking-widest text-slate-700 bg-slate-100 px-2.5 py-1 rounded-xl uppercase">Monthly</span>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="timelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/60 rounded-3xl p-6 duck-shadow flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800">Pipeline Stage Dispersion</h3>
+                                <p class="text-[11px] text-slate-400 font-medium">Distribution of applications across stages</p>
+                            </div>
+                            <span class="p-1 bg-[#F8F9FA] rounded-xl text-slate-400"><i data-lucide="donut" class="w-4 h-4"></i></span>
+                        </div>
+                        <div class="h-56 relative flex items-center justify-center">
+                            <canvas id="distributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white border border-slate-200/60 rounded-3xl p-6 duck-shadow flex flex-col">
+                        <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-1.5">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-slate-500"></i>
+                            <span>City Distribution</span>
+                        </h3>
+                        <div id="cities-breakdown-list" class="space-y-3.5 max-h-[220px] overflow-y-auto pr-1 text-xs font-bold text-slate-600"></div>
+                    </div>
+
+                    <div class="lg:col-span-2 bg-white border border-slate-200/60 rounded-3xl p-6 duck-shadow flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-bold text-slate-800">Recent Activity</h3>
+                            <button onclick="switchTab('table')" class="text-xs font-bold text-slate-700 hover:underline">View All</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs font-bold text-slate-600">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-slate-400 text-[10px] uppercase tracking-wider">
+                                        <th class="py-2 pb-3">Company / Role</th>
+                                        <th class="py-2 pb-3">Status</th>
+                                        <th class="py-2 pb-3 text-center">City</th>
+                                        <th class="py-2 pb-3 text-right">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-activities-table" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Kanban Board Tab -->
+            <section id="tab-board" class="hidden space-y-6">
+                <div>
+                    <h2 class="text-xl font-extrabold tracking-tight text-slate-800">Job Pipeline Kanban Board</h2>
+                    <p class="text-slate-400 text-xs font-semibold">Drag cards to update stages, or use the move buttons on mobile screens.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 overflow-x-auto pb-4">
+                    
+                    <div class="flex flex-col bg-slate-50 border border-slate-200/60 rounded-3xl p-4 min-w-[240px] h-[600px] duck-shadow">
+                        <div class="flex items-center justify-between mb-4 px-1">
+                            <span class="text-xs font-bold text-slate-700">Applied</span>
+                            <span id="count-applied" class="bg-slate-200 text-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div id="col-applied" class="kanban-col flex-1 space-y-3 overflow-y-auto pr-1" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropItem(event, 'Applied')"></div>
+                    </div>
+
+                    <div class="flex flex-col bg-slate-50 border border-slate-200/60 rounded-3xl p-4 min-w-[240px] h-[600px] duck-shadow">
+                        <div class="flex items-center justify-between mb-4 px-1">
+                            <span class="text-xs font-bold text-slate-700">Interviewing</span>
+                            <span id="count-interviewing" class="bg-slate-200 text-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div id="col-interviewing" class="kanban-col flex-1 space-y-3 overflow-y-auto pr-1" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropItem(event, 'Interviewing')"></div>
+                    </div>
+
+                    <div class="flex flex-col bg-slate-50 border border-slate-200/60 rounded-3xl p-4 min-w-[240px] h-[600px] duck-shadow">
+                        <div class="flex items-center justify-between mb-4 px-1">
+                            <span class="text-xs font-bold text-slate-700">Offer</span>
+                            <span id="count-offer" class="bg-slate-200 text-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div id="col-offer" class="kanban-col flex-1 space-y-3 overflow-y-auto pr-1" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropItem(event, 'Offer')"></div>
+                    </div>
+
+                    <div class="flex flex-col bg-slate-50 border border-slate-200/60 rounded-3xl p-4 min-w-[240px] h-[600px] duck-shadow">
+                        <div class="flex items-center justify-between mb-4 px-1">
+                            <span class="text-xs font-bold text-slate-700">Rejected</span>
+                            <span id="count-rejected" class="bg-slate-200 text-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div id="col-rejected" class="kanban-col flex-1 space-y-3 overflow-y-auto pr-1" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropItem(event, 'Rejected')"></div>
+                    </div>
+
+                    <div class="flex flex-col bg-slate-50 border border-slate-200/60 rounded-3xl p-4 min-w-[240px] h-[600px] duck-shadow">
+                        <div class="flex items-center justify-between mb-4 px-1">
+                            <span class="text-xs font-bold text-slate-700">Wishlist</span>
+                            <span id="count-wishlist" class="bg-slate-200 text-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold">0</span>
+                        </div>
+                        <div id="col-wishlist" class="kanban-col flex-1 space-y-3 overflow-y-auto pr-1" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropItem(event, 'Wishlist')"></div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Table Tab -->
+            <section id="tab-table" class="hidden space-y-6">
+                <div>
+                    <h2 class="text-xl font-extrabold tracking-tight text-slate-800">Advanced Registry</h2>
+                    <p class="text-slate-400 text-xs font-semibold">Filter and manage your job applications list.</p>
+                </div>
+
+                <div class="bg-white border border-slate-200/60 p-4 rounded-3xl flex flex-col sm:flex-row gap-4 items-center justify-between duck-shadow">
+                    <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                        <select id="filter-status" onchange="applyTableFilters()" class="bg-[#F8F9FA] border border-slate-200 text-slate-600 text-xs font-bold rounded-2xl px-4 py-2.5 focus:ring-1 focus:ring-duck-500 focus:outline-none cursor-pointer">
+                            <option value="all">All Statuses</option>
+                            <option value="Applied">Applied</option>
+                            <option value="Interviewing">Interviewing</option>
+                            <option value="Offer">Offer</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Wishlist">Wishlist</option>
+                        </select>
+
+                        <select id="filter-location-type" onchange="applyTableFilters()" class="bg-[#F8F9FA] border border-slate-200 text-slate-600 text-xs font-bold rounded-2xl px-4 py-2.5 focus:ring-1 focus:ring-duck-500 focus:outline-none cursor-pointer">
+
+                            <option value="Full-time">Full-time</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="Remote">Remote</option>
+                        </select>
+
+                        <select id="filter-city" onchange="applyTableFilters()" class="bg-[#F8F9FA] border border-slate-200 text-slate-600 text-xs font-bold rounded-2xl px-4 py-2.5 focus:ring-1 focus:ring-duck-500 focus:outline-none cursor-pointer">
+                            <option value="all">All Cities</option>
+                            <option value="Bangkok">Bangkok</option>
+                            <option value="Nonthaburi">Nonthaburi</option>
+                            <option value="Chonburi">Chonburi</option>
+                            <option value="Chiang Mai">Chiang Mai</option>
+                            <option value="Pathum Thani">Pathum Thani</option>
+                            <option value="Samut Prakan">Samut Prakan</option>
+                            <option value="Samut Sakhon">Samut Sakhon</option>
+                        </select>
+                    </div>
+
+                    <div class="text-xs text-slate-400 font-bold">
+                        <span id="table-results-count" class="bg-[#F8F9FA] px-4 py-2.5 border border-slate-200 rounded-2xl">0 records loaded</span>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200/60 rounded-3xl overflow-hidden duck-shadow">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-bold text-slate-600">
+                            <thead>
+                                <tr class="bg-[#FFFDFB] border-b border-slate-200 text-slate-400 uppercase tracking-wider">
+                                    <th class="p-4 py-5">Company & Role</th>
+                                    <th class="p-4 py-5">Date Applied</th>
+                                    <th class="p-4 py-5">City</th>
+
+                                    <th class="p-4 py-5 text-right">Expected Salary</th>
+                                    <th class="p-4 py-5 text-center">Status</th>
+                                    <th class="p-4 py-5 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="complete-jobs-table-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Add/Edit Job Modal -->
+    <div id="job-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/20 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl transform scale-95 transition-all duration-300 opacity-0" id="modal-content">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-[#F8F9FA]">
+                <div class="flex items-center space-x-2.5">
+                    <div class="p-2 bg-slate-900 text-white rounded-xl shadow-sm" id="modal-icon-container">
+                        <i id="modal-icon" data-lucide="plus" class="w-4 h-4"></i>
+                    </div>
+                    <h3 id="modal-title" class="text-sm font-bold text-slate-800">Add Application</h3>
+                </div>
+                <button onclick="closeJobModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-[#F8F9FA] transition-colors">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <form id="job-form" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="job-id">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Company Name *</label>
+                        <input type="text" id="job-company" required class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none placeholder-slate-300" placeholder="e.g., Agoda, LINE, Shopee">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Job Title *</label>
+                        <input type="text" id="job-role" required class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none placeholder-slate-300" placeholder="e.g., Data Analyst, Software Engineer">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Application Stage</label>
+                        <select id="job-status" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none cursor-pointer">
+                            <option value="Applied">Applied</option>
+                            <option value="Interviewing">Interviewing</option>
+                            <option value="Offer">Offer</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Wishlist">Wishlist</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Date Applied</label>
+                        <input type="date" id="job-date" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">City</label>
+                        <select id="job-city" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none cursor-pointer">
+                            <option value="Bangkok">Bangkok</option>
+                            <option value="Nonthaburi">Nonthaburi</option>
+                            <option value="Chonburi">Chonburi</option>
+                            <option value="Chiang Mai">Chiang Mai</option>
+                            <option value="Pathum Thani">Pathum Thani</option>
+                            <option value="Samut Prakan">Samut Prakan</option>
+                            <option value="Samut Sakhon">Samut Sakhon</option>
+                            <option value="Nakhon Pathom">Nakhon Pathom</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Target Salary (THB)</label>
+                        <input type="number" id="job-salary" required min="10000" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none placeholder-slate-300" placeholder="e.g., 65000">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+
+                        <select id="job-location-type" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none cursor-pointer">
+                            <option value="Full-time">Full-time</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="Remote">Remote</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Employment Type</label>
+                        <select id="job-employee-type" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none cursor-pointer">
+                            <option value="Permanent">Permanent</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Notes (HR contact, test details, etc.)</label>
+                    <textarea id="job-notes" rows="3" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl p-4 text-xs text-slate-700 focus:ring-1 focus:ring-duck-500 focus:outline-none placeholder-slate-300" placeholder="Enter notes here..."></textarea>
+                </div>
+
+                <div class="pt-4 border-t border-slate-200 flex items-center justify-end space-x-3">
+                    <button type="button" onclick="closeJobModal()" class="px-5 py-2.5 bg-[#F8F9FA] hover:bg-slate-100 text-slate-500 rounded-2xl text-xs font-bold transition-all">Cancel</button>
+                    <button type="submit" class="px-6 py-2.5 bg-duck-500 hover:bg-duck-600 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">Save Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-50 bg-slate-950/10 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-6 space-y-4 text-center">
+            <div class="flex flex-col items-center space-y-3 text-slate-900">
+                <div class="p-3 bg-duck-500/15 rounded-full text-slate-700">
+                    <i data-lucide="help-circle" class="w-8 h-8"></i>
+                </div>
+                <h3 class="font-extrabold text-slate-800 text-base">Confirm Action</h3>
+            </div>
+            <p id="confirm-modal-text" class="text-xs font-bold text-slate-500">Are you sure you want to proceed?</p>
+            <div class="flex justify-center space-x-3 pt-2">
+                <button id="confirm-cancel-btn" class="px-5 py-2.5 bg-[#F8F9FA] hover:bg-slate-100 text-slate-500 font-bold rounded-2xl text-xs transition-all">Cancel</button>
+                <button id="confirm-proceed-btn" class="px-5 py-2.5 bg-duck-500 hover:bg-duck-600 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="hidden fixed inset-0 z-50 bg-slate-950/20 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl p-6 space-y-4">
+            <div class="flex flex-col items-center space-y-3 text-center text-slate-900">
+                <div class="p-3 bg-duck-500/15 rounded-full text-duck-600 animate-bounce">
+                    <i data-lucide="sparkles" class="w-8 h-8"></i>
+                </div>
+                <h3 class="font-extrabold text-slate-800 text-lg">Welcome to Job Application Tracker!</h3>
+            </div>
+            <div class="space-y-3 text-xs text-slate-600 leading-relaxed font-semibold">
+                <p>
+                    👋 We've pre-loaded a <strong>Demo JSON database</strong> so you can play around with the Kanban Pipeline, search filters, and Analytics Dashboard immediately.
+                </p>
+                <p>
+                    🧹 When you're ready to track your actual jobs, click the <strong>"Reset to Empty Workspace"</strong> button at the bottom of the sidebar.
+                </p>
+                <p>
+                    📥 If you already have your own JSON backup from a previous hunt, you can use the <strong>"Import JSON Backup"</strong> option to restore it.
+                </p>
+            </div>
+            <div class="flex justify-center pt-2">
+                <button onclick="closeWelcomeModal()" class="w-full px-5 py-3 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">
+                    Let's Go!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

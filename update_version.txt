@@ -1,0 +1,7 @@
+
+1. **Targeted Search Logic**: Optimized the search input (`global-search`) to strictly filter the active user's current tracked applications list.
+2. **Absolute Zero Workspace Reset**: When the user clicks **"Reset to Empty Workspace"**, the tracker will clear all data down to exactly `0` rows.
+3. **Professional English Localization**: Removed all emojis from buttons, select tags, kanban headers, and dialogs. Everything is typeset in professional, clear English.
+4. **Official branding colours & Work Sans**: Customized the theme around `#FFE612` (duck yellow), slate grays, and clean white backgrounds. The typography is set entirely to the geometric **Work Sans** font.
+5. **Precision SVG Logo**: Re-created the open-beak vector logo based on your uploaded image (`image_f13c58.png`) directly in the header using responsive SVG.
+6. **Toast Bug Fix**: Corrected a duplicate nested HTML hierarchy in the toast notification container that caused rendering glitches.

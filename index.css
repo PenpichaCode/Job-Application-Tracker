@@ -1,0 +1,149 @@
+/* Professional modern scrollbar in brand yellow */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #F8F9FA;
+}
+::-webkit-scrollbar-thumb {
+    background: #FFE612;
+    border-radius: 20px;
+    border: 2px solid #F8F9FA;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #E6CD00;
+}
+
+/* Kanban column drag-over highlight */
+.kanban-col.drag-over {
+    background-color: rgba(255, 230, 18, 0.05) !important;
+    border: 2.5px dashed #FFE612 !important;
+    border-radius: 28px;
+}
+
+/* Clean, modern shadows for a premium look */
+.duck-shadow {
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 12px -3px rgba(0, 0, 0, 0.03);
+}
+
+/* Smooth tab switches */
+.tab-btn {
+    transition: all 0.25s ease-in-out;
+}
+
+/* Premium Card Status Classes */
+.card-applied {
+    border-left-color: #FA6781 !important;
+    border-top-color: rgba(250, 103, 129, 0.18) !important;
+    border-right-color: rgba(250, 103, 129, 0.18) !important;
+    border-bottom-color: rgba(250, 103, 129, 0.18) !important;
+    background-color: rgba(250, 103, 129, 0.07) !important;
+}
+.card-applied:hover {
+    border-color: #FA6781 !important;
+    background-color: rgba(250, 103, 129, 0.11) !important;
+    box-shadow: 0 8px 20px -6px rgba(250, 103, 129, 0.15);
+}
+
+.card-interviewing {
+    border-left-color: #FFC94D !important;
+    border-top-color: rgba(255, 201, 77, 0.2) !important;
+    border-right-color: rgba(255, 201, 77, 0.2) !important;
+    border-bottom-color: rgba(255, 201, 77, 0.2) !important;
+    background-color: rgba(255, 201, 77, 0.08) !important;
+}
+.card-interviewing:hover {
+    border-color: #FFC94D !important;
+    background-color: rgba(255, 201, 77, 0.12) !important;
+    box-shadow: 0 8px 20px -6px rgba(255, 201, 77, 0.15);
+}
+
+.card-offer {
+    border-left-color: #59B292 !important;
+    border-top-color: rgba(89, 178, 146, 0.18) !important;
+    border-right-color: rgba(89, 178, 146, 0.18) !important;
+    border-bottom-color: rgba(89, 178, 146, 0.18) !important;
+    background-color: rgba(89, 178, 146, 0.07) !important;
+}
+.card-offer:hover {
+    border-color: #59B292 !important;
+    background-color: rgba(89, 178, 146, 0.11) !important;
+    box-shadow: 0 8px 20px -6px rgba(89, 178, 146, 0.15);
+}
+
+.card-wishlist {
+    border-left-color: #EB4C4C !important;
+    border-top-color: rgba(235, 76, 76, 0.18) !important;
+    border-right-color: rgba(235, 76, 76, 0.18) !important;
+    border-bottom-color: rgba(235, 76, 76, 0.18) !important;
+    background-color: rgba(235, 76, 76, 0.07) !important;
+}
+.card-wishlist:hover {
+    border-color: #EB4C4C !important;
+    background-color: rgba(235, 76, 76, 0.11) !important;
+    box-shadow: 0 8px 20px -6px rgba(235, 76, 76, 0.15);
+}
+
+.card-rejected {
+    border-left-color: #94A3B8 !important;
+    border-top-color: rgba(148, 163, 184, 0.18) !important;
+    border-right-color: rgba(148, 163, 184, 0.18) !important;
+    border-bottom-color: rgba(148, 163, 184, 0.18) !important;
+    background-color: rgba(148, 163, 184, 0.07) !important;
+}
+.card-rejected:hover {
+    border-color: #94A3B8 !important;
+    background-color: rgba(148, 163, 184, 0.11) !important;
+    box-shadow: 0 8px 20px -6px rgba(148, 163, 184, 0.15);
+}
+
+/* Kanban column header badges */
+#count-applied {
+    background-color: rgba(250, 103, 129, 0.12) !important;
+    color: #FA6781 !important;
+}
+#count-interviewing {
+    background-color: rgba(255, 201, 77, 0.18) !important;
+    color: #B37D00 !important;
+}
+#count-offer {
+    background-color: rgba(89, 178, 146, 0.12) !important;
+    color: #3D9475 !important;
+}
+#count-rejected {
+    background-color: rgba(148, 163, 184, 0.15) !important;
+    color: #64748B !important;
+}
+#count-wishlist {
+    background-color: rgba(235, 76, 76, 0.12) !important;
+    color: #EB4C4C !important;
+}
+
+/* Status Badge Classes for Tables/Lists */
+.badge-applied {
+    background-color: rgba(250, 103, 129, 0.08) !important;
+    color: #FA6781 !important;
+    border-color: rgba(250, 103, 129, 0.3) !important;
+}
+.badge-interviewing {
+    background-color: rgba(255, 201, 77, 0.12) !important;
+    color: #B37D00 !important;
+    border-color: rgba(255, 201, 77, 0.4) !important;
+}
+.badge-offer {
+    background-color: rgba(89, 178, 146, 0.08) !important;
+    color: #3D9475 !important;
+    border-color: rgba(89, 178, 146, 0.3) !important;
+}
+.badge-wishlist {
+    background-color: rgba(235, 76, 76, 0.08) !important;
+    color: #EB4C4C !important;
+    border-color: rgba(235, 76, 76, 0.3) !important;
+}
+.badge-rejected {
+    background-color: rgba(148, 163, 184, 0.08) !important;
+    color: #64748B !important;
+    border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
