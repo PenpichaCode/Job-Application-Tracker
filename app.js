@@ -1129,12 +1129,9 @@ window.onload = function() {
         }
     }
     
-    const hasWelcomed = localStorage.getItem('has_welcomed_user_v1');
-    if (!hasWelcomed) {
-        const welcomeModal = document.getElementById('welcome-modal');
-        if (welcomeModal) {
-            welcomeModal.classList.remove('hidden');
-        }
+    const welcomeModal = document.getElementById('welcome-modal');
+    if (welcomeModal) {
+        welcomeModal.classList.remove('hidden');
     }
     
     renderAllViews();
@@ -1181,7 +1178,6 @@ function closeWelcomeModal() {
     if (welcomeModal) {
         welcomeModal.classList.add('hidden');
     }
-    localStorage.setItem('has_welcomed_user_v1', 'true');
 }
 
 function triggerResetWorkspace() {
