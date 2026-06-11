@@ -2,6 +2,31 @@ html {
     font-size: 21px !important;
 }
 
+/* =============================================
+   Onboarding Demo Banner — Slide Animation
+   ============================================= */
+@keyframes bannerSlideDown {
+    from { max-height: 0; opacity: 0; transform: translateY(-8px); }
+    to   { max-height: 120px; opacity: 1; transform: translateY(0); }
+}
+@keyframes bannerSlideUp {
+    from { max-height: 120px; opacity: 1; transform: translateY(0); }
+    to   { max-height: 0; opacity: 0; transform: translateY(-8px); }
+}
+
+#onboarding-banner.banner-visible {
+    display: block;
+    animation: bannerSlideDown 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    max-height: 120px;
+    overflow: hidden;
+}
+#onboarding-banner.banner-hidden {
+    animation: bannerSlideUp 0.3s ease-in forwards;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
 /* Pill selector buttons in Add/Edit modal */
 .pill-btn {
     background: #F8F9FA;

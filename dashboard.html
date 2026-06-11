@@ -129,6 +129,29 @@
 
     <!-- Main content -->
     <main class="flex-1 flex flex-col h-full overflow-y-auto">
+
+        <!-- Onboarding Demo Banner -->
+        <div id="onboarding-banner" class="banner-hidden flex-shrink-0 z-30 relative overflow-hidden" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 20% 50%, rgba(255,230,18,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 50%, rgba(255,230,18,0.05) 0%, transparent 60%);"></div>
+            <div class="relative flex items-center justify-between px-5 py-3 gap-4 flex-wrap">
+                <div class="flex items-center gap-3 flex-1 min-w-0">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-400/20 border border-yellow-400/30 flex items-center justify-center text-base">🦆</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-xs font-extrabold tracking-wide">You're exploring <span class="text-yellow-300">Demo Data</span> — 100 sample applications loaded</p>
+                        <p class="text-slate-400 text-[10px] font-semibold mt-0.5">This is sample data so you can explore the app. When ready, reset to start tracking your real applications.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button onclick="triggerResetWorkspace()" id="banner-reset-btn" class="flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-slate-900 font-extrabold text-[11px] px-4 py-2 rounded-xl transition-all shadow-lg shadow-yellow-400/20">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        Reset to Empty Workspace
+                    </button>
+                    <button onclick="dismissOnboardingBanner()" id="banner-dismiss-btn" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all" title="Dismiss banner">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
         <header class="h-16 border-b border-slate-200/60 bg-white/80 flex items-center justify-between px-6 flex-shrink-0 z-10 backdrop-blur-md">
             <div class="flex items-center space-x-4 flex-1">
                 <div class="relative w-full max-w-md">
@@ -171,18 +194,24 @@
             <!-- Dashboard Tab -->
             <section id="tab-dashboard" class="relative space-y-6">
                 <!-- Premium Lock Overlay for Dashboard -->
-                <div id="dashboard-lock-overlay" class="hidden absolute inset-0 z-30 bg-slate-900/5 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center p-6 text-center space-y-4">
-                    <div class="p-6 bg-white border border-slate-200 shadow-2xl rounded-3xl max-w-sm space-y-4 flex flex-col items-center">
-                        <div class="p-3 bg-duck-500/15 rounded-full text-duck-600">
-                            <i data-lucide="lock" class="w-8 h-8"></i>
+                <div id="dashboard-lock-overlay" class="hidden absolute inset-0 z-30 bg-white/60 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center p-6 text-center">
+                    <!-- Close button -->
+                    <button onclick="document.getElementById('dashboard-lock-overlay').classList.add('hidden')" class="absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all" title="Dismiss">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                    <div class="p-5 bg-white border border-slate-200 shadow-2xl rounded-3xl max-w-xs w-full space-y-3.5 flex flex-col items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="p-2 bg-duck-500/15 rounded-full text-duck-600">
+                                <i data-lucide="lock" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="font-extrabold text-slate-800 text-sm">Analytics Hub Locked</h3>
                         </div>
-                        <h3 class="font-extrabold text-slate-800 text-base">Analytics Hub Locked</h3>
-                        <p class="text-xs font-bold text-slate-500">Upgrade to Premium to view detailed charts, metrics, and trends for your job search.</p>
-                        <div class="w-full space-y-2 pt-2">
-                            <input type="text" id="dashboard-license-key" placeholder="Enter License Key" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 text-center font-bold focus:ring-1 focus:ring-duck-500 focus:outline-none">
-                            <button onclick="activateLicenseFromDashboard()" class="w-full px-5 py-2.5 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">Activate Premium</button>
+                        <p class="text-[11px] font-semibold text-slate-500 leading-relaxed">You've hit the 10-row free limit. Upgrade to unlock Analytics, Export, Import & Themes.</p>
+                        <div class="w-full space-y-2">
+                            <input type="text" id="dashboard-license-key" placeholder="Enter License Key" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2 text-xs text-slate-700 text-center font-bold focus:ring-1 focus:ring-duck-500 focus:outline-none">
+                            <button onclick="activateLicenseFromDashboard()" class="w-full px-5 py-2 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">Activate Premium</button>
                         </div>
-                        <button onclick="openUpgradeModal()" class="text-xs font-bold text-duck-600 hover:text-duck-700 underline">Don't have a key? Buy Premium</button>
+                        <button onclick="openUpgradeModal()" class="text-[11px] font-bold text-duck-600 hover:text-duck-700 underline">Don't have a key? Buy Premium →</button>
                     </div>
                 </div>
                 
@@ -588,80 +617,141 @@
         </div>
     </div>
 
-    <!-- Upgrade Modal (Premium Lock) -->
+    <!-- Upgrade Modal (Premium) — Compact Professional Design -->
     <div id="upgrade-modal" class="hidden fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl p-6 space-y-4 relative">
-            <button onclick="closeUpgradeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-            
-            <div class="flex flex-col items-center space-y-2 text-center">
-                <div class="p-3 bg-duck-500/15 rounded-full text-duck-600">
-                    <i data-lucide="crown" class="w-8 h-8"></i>
-                </div>
-                <h3 class="font-extrabold text-slate-800 text-lg">Upgrade to Ruby's Premium</h3>
-                <p class="text-xs font-bold text-slate-500 px-4">
-                    You have reached the free tier limit of 5 applications. Unlock the full potential of your career tracker.
-                </p>
-            </div>
-
-            <!-- Value Props -->
-            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-2.5 text-xs font-bold text-slate-700">
-                <div class="flex items-center space-x-2.5">
-                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
-                    <span>Unlimited job application tracking rows</span>
-                </div>
-                <div class="flex items-center space-x-2.5">
-                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
-                    <span>Full access to interactive Analytics Hub & trend line graphs</span>
-                </div>
-                <div class="flex items-center space-x-2.5">
-                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
-                    <span>Secure workspace data backups (Export/Import JSON)</span>
-                </div>
-                <div class="flex items-center space-x-2.5">
-                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
-                    <span>One-time payment, lifetime access. 100% Privacy.</span>
+        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden relative">
+            <!-- Header -->
+            <div class="px-5 pt-5 pb-4 border-b border-slate-100">
+                <button onclick="closeUpgradeModal()" class="absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-duck-500/15 rounded-xl text-duck-600 flex-shrink-0">
+                        <i data-lucide="crown" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-slate-800 text-sm">Upgrade to Ruby's Premium</h3>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">One-time payment · Lifetime access</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Payment & QR Code -->
-            <div class="border-t border-slate-100 pt-4 flex flex-col items-center space-y-4">
-                <div class="flex flex-col items-center text-center space-y-1">
-                    <span class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Scan to Pay (299 THB)</span>
-                    <!-- Beautiful CSS QR code container -->
-                    <div class="mt-2 p-2 bg-white border border-slate-200 rounded-2xl shadow-sm">
-                        <img src="https://rubyduckie.com/wp-content/uploads/2026/03/image-12.png?allow_lossy=1" alt="PromptPay QR Code – 299 THB" class="w-36 h-36 object-contain rounded-xl" />
+            <div class="p-5 space-y-4">
+                <!-- Value props — compact 2-col grid -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+                        <span>Unlimited rows</span>
                     </div>
-                    <span class="text-[10px] text-slate-400 font-bold mt-1">PromptPay / Bank Transfer Supported</span>
+                    <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+                        <span>Analytics Hub</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+                        <span>Export / Import</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+                        <span>Themes & more</span>
+                    </div>
                 </div>
 
-                <!-- Pay Slip Step -->
-                <div class="w-full bg-green-50 border border-green-200/60 rounded-2xl p-3.5 space-y-2.5">
-                    <div class="flex items-start space-x-2.5">
-                        <span class="text-green-500 text-base mt-0.5 flex-shrink-0">📨</span>
-                        <p class="text-[11px] text-green-900 font-semibold leading-relaxed">
-                            After payment, send your <strong>pay slip</strong> via LINE to receive your License Key.
-                        </p>
+                <!-- Payment row: QR + Steps side by side -->
+                <div class="flex gap-3 bg-slate-50 border border-slate-100 rounded-2xl p-3">
+                    <!-- QR -->
+                    <div class="flex flex-col items-center gap-1 flex-shrink-0">
+                        <div class="p-1.5 bg-white border border-slate-200 rounded-xl shadow-sm">
+                            <img src="https://rubyduckie.com/wp-content/uploads/2026/03/image-12.png?allow_lossy=1"
+                                 alt="PromptPay QR – 299 THB"
+                                 class="w-20 h-20 object-contain rounded-lg" />
+                        </div>
+                        <span class="text-[10px] font-extrabold text-slate-500">299 THB</span>
                     </div>
-                    <a href="https://lin.ee/5KVFw7u" target="_blank"
-                       class="flex items-center justify-center space-x-2 w-full py-2.5 px-4 rounded-2xl font-extrabold text-xs text-white transition-all active:scale-95 hover:opacity-90 shadow-md"
-                       style="background-color: #06C755;">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.630 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.070 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
-                        </svg>
-                        <span>Send Pay Slip via LINE</span>
-                    </a>
+                    <!-- Steps -->
+                    <div class="flex flex-col justify-center space-y-2 text-[11px] font-semibold text-slate-600">
+                        <div class="flex items-start gap-1.5">
+                            <span class="font-extrabold text-duck-600 flex-shrink-0">1.</span>
+                            <span>Scan QR &amp; pay 299 THB</span>
+                        </div>
+                        <div class="flex items-start gap-1.5">
+                            <span class="font-extrabold text-duck-600 flex-shrink-0">2.</span>
+                            <span>Send pay slip via LINE</span>
+                        </div>
+                        <div class="flex items-start gap-1.5">
+                            <span class="font-extrabold text-duck-600 flex-shrink-0">3.</span>
+                            <span>Receive License Key</span>
+                        </div>
+                        <a href="https://lin.ee/5KVFw7u" target="_blank"
+                           class="inline-flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-xl font-extrabold text-[11px] text-white transition-all active:scale-95 hover:opacity-90 shadow-sm"
+                           style="background-color:#06C755; width:fit-content;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.630 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.070 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+                            </svg>
+                            LINE
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Activation Form -->
-                <div class="w-full space-y-2">
-                    <input type="text" id="upgrade-license-key" placeholder="Enter your License Key here" class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 text-center font-extrabold uppercase placeholder-slate-400 focus:ring-1 focus:ring-duck-500 focus:outline-none">
-                    <button onclick="activateLicenseFromModal()" class="w-full px-5 py-3 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-bold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">
+                <!-- License key input -->
+                <div class="space-y-2">
+                    <input type="text" id="upgrade-license-key"
+                           placeholder="Enter your License Key here"
+                           class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 text-center font-extrabold uppercase placeholder-slate-400 focus:ring-1 focus:ring-duck-500 focus:outline-none tracking-widest">
+                    <button onclick="activateLicenseFromModal()"
+                            class="w-full px-5 py-2.5 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-extrabold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/10">
                         Activate Premium Workspace
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Cache Cleared Modal — shown when premium user returns after cache wipe -->
+    <div id="cache-cleared-modal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl p-6 space-y-5 relative">
+            <button onclick="closeCacheClearedModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Header -->
+            <div class="flex flex-col items-center space-y-3 text-center">
+                <div class="p-3 rounded-full" style="background: linear-gradient(135deg, #fff7e0, #ffe86b);">
+                    <i data-lucide="shield-alert" class="w-8 h-8 text-amber-600"></i>
+                </div>
+                <h3 class="font-extrabold text-slate-800 text-lg">Session Restored — Re-enter License</h3>
+                <p class="text-xs font-bold text-slate-500 px-2 leading-relaxed">
+                    It looks like your browser cache was cleared. Your workspace data is still here, but your Premium status needs to be re-verified.
+                </p>
+            </div>
+
+            <!-- Import recommendation banner -->
+            <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                <i data-lucide="archive-restore" class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"></i>
+                <div>
+                    <p class="text-xs font-extrabold text-amber-800 mb-1">💡 Prevent data loss in the future</p>
+                    <p class="text-[11px] text-amber-700 font-semibold leading-relaxed">
+                        We strongly recommend <strong>exporting a JSON backup</strong> regularly from the sidebar. If your cache is cleared again, you can restore everything instantly with Import JSON.
+                    </p>
+                </div>
+            </div>
+
+            <!-- License Key Input -->
+            <div class="space-y-2.5">
+                <label class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Enter Your License Key</label>
+                <input type="text" id="cache-license-key"
+                    placeholder="Enter your License Key here"
+                    class="w-full bg-[#F8F9FA] border border-slate-200 rounded-2xl px-4 py-3 text-xs text-slate-700 text-center font-extrabold uppercase placeholder-slate-400 focus:ring-2 focus:ring-duck-500 focus:border-duck-500 focus:outline-none tracking-widest">
+                <button onclick="activateLicenseFromCacheModal()"
+                    class="w-full px-5 py-3 bg-duck-500 hover:bg-duck-600 active:scale-95 text-slate-900 font-extrabold rounded-2xl text-xs transition-all shadow-md shadow-duck-500/20">
+                    🔓 Re-activate Premium Workspace
+                </button>
+            </div>
+
+            <!-- Footer hint -->
+            <p class="text-center text-[10px] font-bold text-slate-400">
+                Don't have your key? <a href="https://lin.ee/5KVFw7u" target="_blank" class="text-duck-600 underline hover:text-duck-700">Contact Ruby via LINE</a>
+            </p>
         </div>
     </div>
 

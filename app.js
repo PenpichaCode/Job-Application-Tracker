@@ -1108,42 +1108,71 @@ let distributionChartInstance = null;
 let confirmCallback = null;
 let currentSearchQuery = "";
 
+// --- Workspace Mode Helper ---
+// 'demo'  = first-time visitor using seeded data (all features unlocked for exploration)
+// 'live'  = user has reset to their own workspace (premium gates apply)
+function isDemoMode() {
+    return localStorage.getItem('workspace_mode') !== 'live';
+}
+
 window.onload = function() {
     lucide.createIcons();
-    
-    // Check premium status
+
+    // --- Set workspace mode ---
+    // If workspace_mode hasn't been set yet, this is a fresh session → demo mode
+    if (!localStorage.getItem('workspace_mode')) {
+        localStorage.setItem('workspace_mode', 'demo');
+    }
+
+    // --- Check premium status ---
     isPremium = localStorage.getItem('is_premium_user_v1') === 'true';
+
+    // --- Detect: cache was cleared on a live (paid) workspace ---
+    // Condition: workspace is live AND premium key is gone BUT there's existing data
+    const storedData = localStorage.getItem('careers_tracker_db_v1');
+    const workspaceMode = localStorage.getItem('workspace_mode');
+    if (workspaceMode === 'live' && !isPremium && storedData && JSON.parse(storedData || '[]').length > 0) {
+        // Show a re-enter license + import recommendation modal
+        setTimeout(() => openCacheClearedModal(), 400);
+    }
+
     updatePremiumUI();
-    
-    // Load app theme
+
+    // --- Load app theme ---
     const savedTheme = localStorage.getItem('app_theme_v1') || 'classic';
     changeAppTheme(savedTheme);
-    
+
+    // --- Seed / Load data ---
     const hasSeeded = localStorage.getItem('has_seeded_demo_db_v1');
     if (!hasSeeded) {
+        // Absolute first-time visitor: seed demo data
         applications = [...initialThaiDatabase];
         saveToLocalStorage();
         localStorage.setItem('has_seeded_demo_db_v1', 'true');
+        localStorage.setItem('workspace_mode', 'demo');
+        // Show welcome modal
+        const welcomeModal = document.getElementById('welcome-modal');
+        if (welcomeModal) welcomeModal.classList.remove('hidden');
+        // Show the onboarding demo banner
+        showOnboardingBanner();
     } else {
-        const stored = localStorage.getItem('careers_tracker_db_v1');
-        if (stored) {
+        if (storedData) {
             try {
-                applications = JSON.parse(stored);
+                applications = JSON.parse(storedData);
             } catch(e) {
                 applications = [];
             }
         } else {
             applications = [];
         }
+        // Re-show banner if still in demo mode and it was active
+        if (localStorage.getItem('has_seeded_demo_db_v1') === 'demo_active') {
+            showOnboardingBanner();
+        }
     }
-    
-    const welcomeModal = document.getElementById('welcome-modal');
-    if (welcomeModal) {
-        welcomeModal.classList.remove('hidden');
-    }
-    
+
     renderAllViews();
-    
+
     document.getElementById('job-date').value = new Date().toISOString().split('T')[0];
     document.getElementById('confirm-cancel-btn').addEventListener('click', closeConfirmModal);
     document.getElementById('confirm-proceed-btn').addEventListener('click', proceedConfirmModal);
@@ -1186,15 +1215,43 @@ function closeWelcomeModal() {
     if (welcomeModal) {
         welcomeModal.classList.add('hidden');
     }
+    // Mark banner as active so it persists across refresh until user dismisses
+    if (localStorage.getItem('has_seeded_demo_db_v1') === 'true') {
+        localStorage.setItem('has_seeded_demo_db_v1', 'demo_active');
+    }
+}
+
+function showOnboardingBanner() {
+    const banner = document.getElementById('onboarding-banner');
+    if (banner) {
+        banner.classList.remove('banner-hidden');
+        banner.classList.add('banner-visible');
+    }
+}
+
+function dismissOnboardingBanner() {
+    const banner = document.getElementById('onboarding-banner');
+    if (banner) {
+        banner.classList.remove('banner-visible');
+        banner.classList.add('banner-hidden');
+    }
+    // Mark banner as permanently dismissed
+    localStorage.setItem('has_seeded_demo_db_v1', 'dismissed');
 }
 
 function triggerResetWorkspace() {
     showCustomConfirm("Are you sure you want to reset the workspace to empty? This will delete all tracked applications.", function() {
         applications = [];
         localStorage.setItem('careers_tracker_db_v1', JSON.stringify([]));
-        localStorage.setItem('has_seeded_demo_db_v1', 'true');
+        // Switch to LIVE mode — premium gates now apply
+        localStorage.setItem('workspace_mode', 'live');
+        localStorage.setItem('has_seeded_demo_db_v1', 'dismissed');
+        // Hide onboarding banner
+        dismissOnboardingBanner();
+        // Re-apply premium UI now that we are in live mode
+        updatePremiumUI();
         renderAllViews();
-        showToast("Workspace Reset", "All application data has been cleared.", "info");
+        showToast("Workspace Ready", "Demo data cleared. Track your real applications now! 🦆", "info");
     });
 }
 
@@ -1218,6 +1275,8 @@ function switchTab(tabId) {
         requestAnimationFrame(() => {
             renderCharts();
             renderCitiesBreakdown();
+            // Re-check lock state when entering dashboard tab
+            updatePremiumUI();
         });
     }
 }
@@ -1295,6 +1354,8 @@ function renderAllViews() {
     renderRecentActivitiesTable();
     renderKanbanBoard();
     applyTableFilters();
+    // Re-evaluate premium lock state after every data change
+    updatePremiumUI();
 }
 
 function renderMetrics() {
@@ -1654,8 +1715,9 @@ function handleFormSubmit(event) {
     
     const id = document.getElementById('job-id').value;
     
-    // Check free tier limit (maximum 5 entries)
-    if (!id && applications.length >= 5 && !isPremium) {
+    // Check free tier limit — skipped in demo mode (demo has 100+ rows)
+    // Paywall fires on the 11th entry in LIVE mode for non-premium users
+    if (!id && applications.length >= 10 && !isPremium && !isDemoMode()) {
         closeJobModal();
         openUpgradeModal();
         return;
@@ -1861,20 +1923,35 @@ function closeUpgradeModal() {
 }
 
 function updatePremiumUI() {
-    const lockOverlays = document.querySelectorAll('#dashboard-lock-overlay');
+    const lockOverlay = document.getElementById('dashboard-lock-overlay');
     const lockIndicators = document.querySelectorAll('.lock-indicator');
-    
-    if (isPremium) {
-        lockOverlays.forEach(el => el.classList.add('hidden'));
+    const dashboardTab = document.getElementById('tab-dashboard');
+
+    // DEMO mode or PREMIUM: everything fully unlocked, no locks anywhere
+    if (isPremium || isDemoMode()) {
+        if (lockOverlay) lockOverlay.classList.add('hidden');
         lockIndicators.forEach(el => el.classList.add('hidden'));
-    } else {
+        return;
+    }
+
+    // LIVE mode, non-premium:
+    // Analytics Hub only locks once the user has hit the 10-row limit
+    const hitLimit = applications.length >= 10;
+
+    if (hitLimit) {
+        // Show lock icons on export/import/theme
         lockIndicators.forEach(el => el.classList.remove('hidden'));
-        // If they are on the dashboard, show the lock overlay
-        const lockOverlay = document.getElementById('dashboard-lock-overlay');
-        const dashboardTab = document.getElementById('tab-dashboard');
+        // Show analytics overlay only when on the dashboard tab
         if (lockOverlay && dashboardTab && !dashboardTab.classList.contains('hidden')) {
             lockOverlay.classList.remove('hidden');
+        } else if (lockOverlay) {
+            // Pre-hide it; it will show when user switches to dashboard tab
+            lockOverlay.classList.remove('hidden');
         }
+    } else {
+        // Under 10 rows: keep everything unlocked (teaser access)
+        if (lockOverlay) lockOverlay.classList.add('hidden');
+        lockIndicators.forEach(el => el.classList.add('hidden'));
     }
 }
 
@@ -1883,13 +1960,36 @@ function activateLicense(key) {
     if (VALID_LICENSE_KEYS.includes(formattedKey)) {
         isPremium = true;
         localStorage.setItem('is_premium_user_v1', 'true');
+        // Activating premium always puts us in live mode
+        localStorage.setItem('workspace_mode', 'live');
+        localStorage.setItem('has_seeded_demo_db_v1', 'dismissed');
+        dismissOnboardingBanner();
         updatePremiumUI();
+        closeCacheClearedModal();
         closeUpgradeModal();
-        showToast("Premium Activated", "Thank you for unlocking Ruby's Premium Workspace! 🎉", "success");
+        showToast("Premium Activated 🎉", "Welcome back! Your full workspace is unlocked.", "success");
         return true;
     }
     showToast("Invalid Key", "Please check your code or scan the QR code to purchase.", "error");
     return false;
+}
+
+// --- Cache Cleared Modal helpers ---
+function openCacheClearedModal() {
+    const modal = document.getElementById('cache-cleared-modal');
+    if (modal) modal.classList.remove('hidden');
+}
+function closeCacheClearedModal() {
+    const modal = document.getElementById('cache-cleared-modal');
+    if (modal) modal.classList.add('hidden');
+}
+function activateLicenseFromCacheModal() {
+    const input = document.getElementById('cache-license-key');
+    if (input) {
+        if (activateLicense(input.value)) {
+            input.value = '';
+        }
+    }
 }
 
 function activateLicenseFromModal() {
@@ -1913,7 +2013,8 @@ function activateLicenseFromDashboard() {
 }
 
 function handleExportClick() {
-    if (!isPremium) {
+    // Allow in demo mode OR if premium
+    if (!isPremium && !isDemoMode()) {
         openUpgradeModal();
     } else {
         exportData();
@@ -1921,14 +2022,16 @@ function handleExportClick() {
 }
 
 function handleImportLabelClick(event) {
-    if (!isPremium) {
-        event.preventDefault(); // Block opening the file selector
+    // Allow in demo mode OR if premium
+    if (!isPremium && !isDemoMode()) {
+        event.preventDefault();
         openUpgradeModal();
     }
 }
 
 function handleThemeClick(themeId) {
-    if (!isPremium) {
+    // Allow in demo mode OR if premium
+    if (!isPremium && !isDemoMode()) {
         openUpgradeModal();
     } else {
         changeAppTheme(themeId);

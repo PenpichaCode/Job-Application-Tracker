@@ -1,0 +1,6 @@
+Update feature v2.1
+- Initial Seed Onboarding: When users first visit the website, they will see a test database of 100 rows displaying beautiful graphs and a forum, along with a banner at the top prompting them to clear the data.
+- Clear Mockup to 0 Rows: When the user clicks the "Reset to Empty Workspace" button or the banner above, all demo data will be immediately cleared, and the workspace will be reset to 0 rows for a clean, live setup.
+-The 10-Row Free Limit: Regular users can save, edit, and update their own tasks for free, up to a maximum of 10 tasks.
+
+-Instant Paywall Trigger (6th Item block): Once a user has saved 10 tasks and attempts to click "Commit Application" to save the 11th task, the system will immediately block data writing to LocalStorage and open a Premium Paywall Modal window displaying a QR code for payment along with a field to enter a License Key for continued use. Previous data will not be lost.
